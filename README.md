@@ -69,5 +69,3 @@ Yield Over Time
 
 
 
-
-
