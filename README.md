@@ -54,9 +54,7 @@ Yield Over Time
 
 ![yield_over_time](https://user-images.githubusercontent.com/93121277/164192967-1938c6c2-9b08-416d-b6a6-7897d7ad8af5.png)
 
-
-
-
+# FASTQ Quality Summary.....
 
 
 
