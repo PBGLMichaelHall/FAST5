@@ -54,9 +54,19 @@ Yield Over Time
 
 ![yield_over_time](https://user-images.githubusercontent.com/93121277/164192967-1938c6c2-9b08-416d-b6a6-7897d7ad8af5.png)
 
-# FASTQ Quality Summary.....
+# FASTQ Quality Summary for the FAILED Minion Run
+
+![fail1](https://user-images.githubusercontent.com/93121277/164201047-4dd7d379-fba7-47af-a0c9-e48334f09db7.png)
+
+![fail2](https://user-images.githubusercontent.com/93121277/164201041-488485c3-a425-4277-884a-44d0db03362a.png)
+
+# FASTQ Quality Summary for the PASSED Minion Run
 
 
+
+![pass1](https://user-images.githubusercontent.com/93121277/164201143-c3431342-9829-4bdc-8ff4-60e9cd494618.png)
+![pass2](https://user-images.githubusercontent.com/93121277/164201142-a314f352-04ce-4923-8baa-d7a029683101.png)
+![pass3](https://user-images.githubusercontent.com/93121277/164201140-50e91b57-3965-41cd-991b-59ffab8a1050.png)
 
 
 
