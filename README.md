@@ -15,10 +15,12 @@ Channel Summary
 ![channel_summary](https://user-images.githubusercontent.com/93121277/164192571-f603793d-9c4d-417b-b52d-94ea9a3ecf11.png)
 
 Flowcell Overview
+# There are 16 X 32 = (512) Flowcells available, however in the plot 5 - 30 are missing.....
 
 ![flowcell_overview](https://user-images.githubusercontent.com/93121277/164192623-17d84cc5-5b28-4b8b-9895-55ffb70f86f9.png)
 
 GB Per Channel Overview
+# Again there is missing Channels notice all the white space
 
 ![gb_per_channel_overview](https://user-images.githubusercontent.com/93121277/164192665-6681a9b5-e627-4e4e-b279-bb50e9ac2abf.png)
 
