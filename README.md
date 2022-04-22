@@ -58,13 +58,35 @@ Yield Over Time
 
 # FASTQ Quality Summary for the FAILED Minion Run
 
+
+```r
+setwd("/home/michael/FAST5/CoffeeMinIon/20220414_1039_MN19654_AJF976_ed35bf91/fast5/guppy_out")
+library(fastqcr)
+fastqc_install()
+fastqc(fq.dir = "/home/michael/FAST5/CoffeeMinIon/20220414_1039_MN19654_AJF976_ed35bf91/fast5/guppy_out/fail",threads = 4)
+```
+![sc](https://user-images.githubusercontent.com/93121277/164649983-92288f0e-7253-4b67-97cb-8af02b7dd0aa.png)
+
+# A FASTQC Directory was automatically generated in /guppy_out/fail/ and in this directory is an html file giving the following images.
+
 ![fail1](https://user-images.githubusercontent.com/93121277/164201047-4dd7d379-fba7-47af-a0c9-e48334f09db7.png)
 
 ![fail2](https://user-images.githubusercontent.com/93121277/164201041-488485c3-a425-4277-884a-44d0db03362a.png)
 
 # FASTQ Quality Summary for the PASSED Minion Run
 
+```r
+setwd("/home/michael/FAST5/CoffeeMinIon/20220414_1039_MN19654_AJF976_ed35bf91/fast5/guppy_out")
+library(fastqcr)
+fastqc_install()
+fastqc(fq.dir = "/home/michael/FAST5/CoffeeMinIon/20220414_1039_MN19654_AJF976_ed35bf91/fast5/guppy_out/pass",threads = 4)
 
+```
+
+![sd](https://user-images.githubusercontent.com/93121277/164650846-6f56de56-1d35-4874-82e7-5f719bf9c5c9.png)
+
+
+# A FASTQC Directory was automatically generated in /guppy_out/pass/ and in this directory is an html file giving the following images.
 
 ![pass1](https://user-images.githubusercontent.com/93121277/164201143-c3431342-9829-4bdc-8ff4-60e9cd494618.png)
 ![pass2](https://user-images.githubusercontent.com/93121277/164201142-a314f352-04ce-4923-8baa-d7a029683101.png)
