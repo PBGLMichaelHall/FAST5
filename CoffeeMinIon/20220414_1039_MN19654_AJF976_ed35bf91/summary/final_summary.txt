@@ -1,0 +1,17 @@
+instrument=MN19654
+position=
+flow_cell_id=AJF976
+sample_id=primerTest-6barcodes
+protocol_group_id=coffee4primerPCR
+protocol=4a127386521a00415c821269a588a9271276dfd0
+protocol_run_id=ed35bf91-1c57-4e6b-91af-a512e712382a
+acquisition_run_id=94dd8d03aa43bb3ac59d61d6b73a0ac5e939526b
+started=2022-04-14T12:41:49.947871+02:00
+acquisition_stopped=2022-04-16T12:41:53.543518+02:00
+processing_stopped=2022-04-16T12:41:54.845532+02:00
+basecalling_enabled=0
+sequencing_summary_file=
+fast5_files_in_final_dest=2
+fast5_files_in_fallback=0
+fastq_files_in_final_dest=0
+fastq_files_in_fallback=0
