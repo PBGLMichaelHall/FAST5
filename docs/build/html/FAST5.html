@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Processing and Analyzing FAST5 files from a minION Run &mdash; VCFstat Package in R 1.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Welcome to FAST5’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> VCFstat Package in R
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Processing and Analyzing FAST5 files from a minION Run</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#fast5-files">FAST5 Files</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#installation">Installation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#data-tree">Data Tree</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#failed-minion-run-qc-report">Failed Minion Run QC Report</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#fastqc-directory-and-html-output">FASTQC Directory and HTML OUTPUT</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#summary">Summary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#basic-statistics">Basic Statistics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#per-base-sequence-quality">Per base sequence quality</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#per-sequence-quality-scores">Per sequence quality scores</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#per-base-sequence-content">Per base sequence content</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#per-sequence-gc-content">Per sequence GC content</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#per-base-n-content">Per base N content</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sequence-length-distribution">Sequence Length Distribution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sequence-duplication-levels">Sequence Duplication Levels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#overrepresented-sequences">Overrepresented sequences</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#adpater-content">Adpater Content</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#successful-minion-run-qc-report">Successful Minion Run QC Report</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">FASTQC Directory and HTML OUTPUT</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id2">Summary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3">Basic Statistics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4">Per base sequence quality</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id5">Per sequence quality scores</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id6">Per base sequence content</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id7">Per sequence GC content</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id8">Per base N content</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id9">Sequence Length Distribution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id10">Sequence Duplication Levels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id11">Overrepresented sequences</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id12">Adpater Content</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#minionqc-r">MinIONQC.R</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#channel-summary">Channel Summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#flowcell-overview">Flowcell Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gb-per-channel-overview">GB Per Channel Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#length-per-hour">Length Per Hour</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#length-histogram">Length Histogram</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#length-vs-quality">Length vs. Quality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#quality-by-hour">Quality by Hour</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#quality-histogram">Quality Histogram</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reads-per-hour">Reads Per Hour</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#yield-by-length">Yield by Length</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#yield-over-time">Yield Over Time</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">VCFstat Package in R</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Processing and Analyzing FAST5 files from a minION Run</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/FAST5.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="processing-and-analyzing-fast5-files-from-a-minion-run">
+<h1>Processing and Analyzing FAST5 files from a minION Run</h1>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Michael Hall</p>
+</dd>
+<dt class="field-even">Date</dt>
+<dd class="field-even"><p>4/25/2022</p>
+</dd>
+</dl>
+<section id="fast5-files">
+<h2>FAST5 Files</h2>
+<blockquote>
+<div><p>FAST5 files are raw data produced from a MinION Run.
+In this tutorial I show two major data processing steps after DNA has been extracted from a model organism.
+An experiment was done on a Coffee Plant in this case and two fastq files were produced, one failed, the other succeeded.
+First I would like to determine the quality of the data using Qualimap.
+Second I would like to run FAST5 files through an R Script pipleine that also assess its quality.</p>
+</div></blockquote>
+<hr class="docutils" />
+<section id="installation">
+<h3>Installation</h3>
+<blockquote>
+<div><p>It is necessary to clone a github repository to do the analysis.
+First clone <a class="reference external" href="https://github.com/PBGLMichaelHall/FAST5.git">https://github.com/PBGLMichaelHall/FAST5.git</a>.</p>
+</div></blockquote>
+<section id="data-tree">
+<h4>Data Tree</h4>
+<figure class="align-default">
+<img alt="_images/1.png" src="_images/1.png" />
+</figure>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">===========================</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="failed-minion-run-qc-report">
+<h2>Failed Minion Run QC Report</h2>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">setwd</span><span class="p">(</span><span class="s">&quot;~/FAST5/CoffeeMinIon/20220414_1039_MN19654_AJF976_ed35bf91/fast5/guppy_out&quot;</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">fastqcr</span><span class="p">)</span>
+<span class="nf">fastqc_install</span><span class="p">()</span>
+<span class="nf">fastqc</span><span class="p">(</span><span class="n">fq.dir</span> <span class="o">=</span> <span class="s">&quot;/home/michael/FAST5/CoffeeMinIon/20220414_1039_MN19654_AJF976_ed35bf91/fast5/guppy_out/fail&quot;</span><span class="p">,</span><span class="n">threads</span> <span class="o">=</span> <span class="m">4</span><span class="p">)</span>
+</pre></div>
+</div>
+<figure class="align-default">
+<img alt="_images/2.png" src="_images/2.png" />
+</figure>
+<section id="fastqc-directory-and-html-output">
+<h3>FASTQC Directory and HTML OUTPUT</h3>
+<section id="summary">
+<h4>Summary</h4>
+<figure class="align-default">
+<img alt="_images/summary.png" src="_images/summary.png" />
+</figure>
+</section>
+<section id="basic-statistics">
+<h4>Basic Statistics</h4>
+<figure class="align-default">
+<img alt="_images/3.png" src="_images/3.png" />
+</figure>
+</section>
+<section id="per-base-sequence-quality">
+<h4>Per base sequence quality</h4>
+<figure class="align-default">
+<img alt="_images/4.png" src="_images/4.png" />
+</figure>
+</section>
+<section id="per-sequence-quality-scores">
+<h4>Per sequence quality scores</h4>
+<figure class="align-default">
+<img alt="_images/5.png" src="_images/5.png" />
+</figure>
+</section>
+<section id="per-base-sequence-content">
+<h4>Per base sequence content</h4>
+<figure class="align-default">
+<img alt="_images/6.png" src="_images/6.png" />
+</figure>
+</section>
+<section id="per-sequence-gc-content">
+<h4>Per sequence GC content</h4>
+<figure class="align-default">
+<img alt="_images/7.png" src="_images/7.png" />
+</figure>
+</section>
+<section id="per-base-n-content">
+<h4>Per base N content</h4>
+<figure class="align-default">
+<img alt="_images/8.png" src="_images/8.png" />
+</figure>
+</section>
+<section id="sequence-length-distribution">
+<h4>Sequence Length Distribution</h4>
+<figure class="align-default">
+<img alt="_images/9.png" src="_images/9.png" />
+</figure>
+</section>
+<section id="sequence-duplication-levels">
+<h4>Sequence Duplication Levels</h4>
+<figure class="align-default">
+<img alt="_images/10.png" src="_images/10.png" />
+</figure>
+</section>
+<section id="overrepresented-sequences">
+<h4>Overrepresented sequences</h4>
+<figure class="align-default">
+<img alt="_images/11.png" src="_images/11.png" />
+</figure>
+</section>
+<section id="adpater-content">
+<h4>Adpater Content</h4>
+<figure class="align-default">
+<img alt="_images/12.png" src="_images/12.png" />
+</figure>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">===============================</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="successful-minion-run-qc-report">
+<h2>Successful Minion Run QC Report</h2>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set the working directory</span>
+<span class="nf">setwd</span><span class="p">(</span><span class="s">&quot;~/FAST5/CoffeeMinIon/20220414_1039_MN19654_AJF976_ed35bf91/fast5/guppy_out&quot;</span><span class="p">)</span>
+
+<span class="c1"># Confirm you have fastqcr loaded in your namespace and attached</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">fastqcr</span><span class="p">)</span>
+
+<span class="c1"># If not install it</span>
+<span class="nf">fastqc_install</span><span class="p">()</span>
+
+<span class="c1"># Call the fastqc function from the package provided passed fastq directory as input argument and specify thread count</span>
+<span class="nf">fastqc</span><span class="p">(</span><span class="n">fq.dir</span> <span class="o">=</span> <span class="s">&quot;/home/michael/FAST5/CoffeeMinIon/20220414_1039_MN19654_AJF976_ed35bf91/fast5/guppy_out/pass&quot;</span><span class="p">,</span><span class="n">threads</span> <span class="o">=</span> <span class="m">4</span><span class="p">)</span>
+</pre></div>
+</div>
+<figure class="align-default">
+<img alt="_images/13.png" src="_images/13.png" />
+</figure>
+<section id="id1">
+<h3>FASTQC Directory and HTML OUTPUT</h3>
+<section id="id2">
+<h4>Summary</h4>
+<figure class="align-default">
+<img alt="_images/summary2.png" src="_images/summary2.png" />
+</figure>
+</section>
+<section id="id3">
+<h4>Basic Statistics</h4>
+<figure class="align-default">
+<img alt="_images/14.png" src="_images/14.png" />
+</figure>
+</section>
+<section id="id4">
+<h4>Per base sequence quality</h4>
+<figure class="align-default">
+<img alt="_images/15.png" src="_images/15.png" />
+</figure>
+</section>
+<section id="id5">
+<h4>Per sequence quality scores</h4>
+<figure class="align-default">
+<img alt="_images/16.png" src="_images/16.png" />
+</figure>
+</section>
+<section id="id6">
+<h4>Per base sequence content</h4>
+<figure class="align-default">
+<img alt="_images/17.png" src="_images/17.png" />
+</figure>
+</section>
+<section id="id7">
+<h4>Per sequence GC content</h4>
+<figure class="align-default">
+<img alt="_images/18.png" src="_images/18.png" />
+</figure>
+</section>
+<section id="id8">
+<h4>Per base N content</h4>
+<figure class="align-default">
+<img alt="_images/19.png" src="_images/19.png" />
+</figure>
+</section>
+<section id="id9">
+<h4>Sequence Length Distribution</h4>
+<figure class="align-default">
+<img alt="_images/20.png" src="_images/20.png" />
+</figure>
+</section>
+<section id="id10">
+<h4>Sequence Duplication Levels</h4>
+<figure class="align-default">
+<img alt="_images/21.png" src="_images/21.png" />
+</figure>
+</section>
+<section id="id11">
+<h4>Overrepresented sequences</h4>
+<figure class="align-default">
+<img alt="_images/22.png" src="_images/22.png" />
+</figure>
+</section>
+<section id="id12">
+<h4>Adpater Content</h4>
+<figure class="align-default">
+<img alt="_images/23.png" src="_images/23.png" />
+</figure>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">==========</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="minionqc-r">
+<h2>MinIONQC.R</h2>
+<blockquote>
+<div><p>First we want to reorgainze the data structure so the RScript from <a class="reference external" href="https://github.com/roblanf/minion_qc">https://github.com/roblanf/minion_qc</a> can plot,interpret and analyze the MinION reads.
+Create a summary directory and place final_summary.txt and sequencing_summary.txt. Copy the MinIONQC.R Script into main directory and run the following command line.
+It will produce a standard output if successful</p>
+</div></blockquote>
+<figure class="align-default">
+<img alt="_images/24.png" src="_images/24.png" />
+</figure>
+<section id="channel-summary">
+<h3>Channel Summary</h3>
+<figure class="align-default">
+<img alt="_images/25.png" src="_images/25.png" />
+</figure>
+</section>
+<section id="flowcell-overview">
+<h3>Flowcell Overview</h3>
+<figure class="align-default">
+<img alt="_images/26.png" src="_images/26.png" />
+</figure>
+</section>
+<section id="gb-per-channel-overview">
+<h3>GB Per Channel Overview</h3>
+<figure class="align-default">
+<img alt="_images/27.png" src="_images/27.png" />
+</figure>
+</section>
+<section id="length-per-hour">
+<h3>Length Per Hour</h3>
+<figure class="align-default">
+<img alt="_images/28.png" src="_images/28.png" />
+</figure>
+</section>
+<section id="length-histogram">
+<h3>Length Histogram</h3>
+<figure class="align-default">
+<img alt="_images/29.png" src="_images/29.png" />
+</figure>
+</section>
+<section id="length-vs-quality">
+<h3>Length vs. Quality</h3>
+<figure class="align-default">
+<img alt="_images/30.png" src="_images/30.png" />
+</figure>
+</section>
+<section id="quality-by-hour">
+<h3>Quality by Hour</h3>
+<figure class="align-default">
+<img alt="_images/31.png" src="_images/31.png" />
+</figure>
+</section>
+<section id="quality-histogram">
+<h3>Quality Histogram</h3>
+<figure class="align-default">
+<img alt="_images/32.png" src="_images/32.png" />
+</figure>
+</section>
+<section id="reads-per-hour">
+<h3>Reads Per Hour</h3>
+<figure class="align-default">
+<img alt="_images/33.png" src="_images/33.png" />
+</figure>
+</section>
+<section id="yield-by-length">
+<h3>Yield by Length</h3>
+<figure class="align-default">
+<img alt="_images/34.png" src="_images/34.png" />
+</figure>
+</section>
+<section id="yield-over-time">
+<h3>Yield Over Time</h3>
+<figure class="align-default">
+<img alt="_images/35.png" src="_images/35.png" />
+</figure>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to FAST5’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Michael Hall.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
