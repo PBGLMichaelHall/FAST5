@@ -20,7 +20,7 @@ sys.path.insert(0, os.path.abspath('/home/michael/miniconda3/lib/python3.9/site-
 
 # -- Project information -----------------------------------------------------
 
-project = 'VCFstat Package in R'
+project = 'FAST5 in Coffee'
 copyright = '2022, Michael Hall'
 author = 'Michael Hall'
 
