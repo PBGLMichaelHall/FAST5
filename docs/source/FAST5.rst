@@ -211,6 +211,9 @@ Data Tree
    End:                1395287   
    Mapped Reads:     81
 
+
+.. figure:: ../images/ivg99.png
+
 ::
 
 
