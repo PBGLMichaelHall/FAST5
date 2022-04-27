@@ -216,32 +216,64 @@ Data Tree
 
 ::
 
-.. code:: r
 
-   # So the head shows there are three variants called on the LOC113688632 gene
+   
+   We want to make a GRanges object that provides variant calls in CODING regions/locations only
 
-   # All Variants in G Ranges Object in ALL locations
+   setwd("/home/michael/FAST5/CoffeeMinIon/20220414_1039_MN19654_AJF976_ed35bf91")
 
-   allvar <- locateVariants(rd, GFFTXB, AllVariants())
+   library(vcfR)
+   library(VariantAnnotation)
+   library(GenomicFeatures)
 
-   #How many total variants called
+   vcf <- readVcf(file = "vcfplots/BIALLELIC~ONLY.vcf")
 
-   head(allvar,10)
+   rd <- rowRanges(vcf)
+
+   # convert annotations to TxDb object
+   GFFTXB<-makeTxDbFromGFF(file="GCF_003713225.1_Cara_1.0_genomic.gff.gz")
+
+
+   Locate Variants
+   loc <- locateVariants(rd, GFFTXB, CodingVariants())
+
+   How many variants were called in coding locations
+   length(loc)
+   38 ranges which means 38 total variants were located wihin a coding region with a particular geneID
+   #Inspect the head
+   head(loc,10)
 
    GRanges object with 10 ranges and 9 metadata columns:
-                              seqnames    ranges strand |   LOCATION  LOCSTART    LOCEND   QUERYID        TXID         CDSID      GENEID                                  PRECEDEID                                   FOLLOWID
-                                 <Rle> <IRanges>  <Rle> |   <factor> <integer> <integer> <integer> <character> <IntegerList> <character>                            <CharacterList>                            <CharacterList>
-   NC_039919.1:30804544_G/A NC_039919.1  30804544      * | intergenic      <NA>      <NA>         1        <NA>                      <NA>      LOC113717563,LOC113717635,LOC113717636,... LOC113717566,LOC113717567,LOC113717568,...
-   NC_039919.1:30804551_A/T NC_039919.1  30804551      * | intergenic      <NA>      <NA>         2        <NA>                      <NA>  LOC113717563,LOC113717635,LOC113717636,... LOC113717566,LOC113717567,LOC113717568,...
-   NC_039919.1:30804586_T/A NC_039919.1  30804586      * | intergenic      <NA>      <NA>         3        <NA>                      <NA> LOC113717563,LOC113717635,LOC113717636,... LOC113717566,LOC113717567,LOC113717568,...
-   NC_039919.1:30804649_G/A NC_039919.1  30804649      * | intergenic      <NA>      <NA>         4        <NA>                      <NA> LOC113717563,LOC113717635,LOC113717636,... LOC113717566,LOC113717567,LOC113717568,...
-   NC_039919.1:30804650_G/T NC_039919.1  30804650      * | intergenic      <NA>      <NA>         5        <NA>                      <NA> LOC113717563,LOC113717635,LOC113717636,... LOC113717566,LOC113717567,LOC113717568,...
-   NC_039919.1:30804651_G/T NC_039919.1  30804651      * | intergenic      <NA>      <NA>         6        <NA>                      <NA> LOC113717563,LOC113717635,LOC113717636,... LOC113717566,LOC113717567,LOC113717568,...
-   NC_039919.1:30804657_C/A NC_039919.1  30804657      * | intergenic      <NA>      <NA>         7        <NA>                      <NA> LOC113717563,LOC113717635,LOC113717636,... LOC113717566,LOC113717567,LOC113717568,...
-   NC_039919.1:30804702_A/T NC_039919.1  30804702      * | intergenic      <NA>      <NA>         8        <NA>                      <NA> LOC113717563,LOC113717635,LOC113717636,... LOC113717566,LOC113717567,LOC113717568,...
-   NC_039919.1:30804721_G/T NC_039919.1  30804721      * | intergenic      <NA>      <NA>         9        <NA>                      <NA> LOC113717563,LOC113717635,LOC113717636,... LOC113717566,LOC113717567,LOC113717568,...
-   NC_039919.1:30804727_G/T NC_039919.1  30804727      * | intergenic      <NA>      <NA>        10        <NA>                      <NA> LOC113717563,LOC113717635,LOC113717636,... LOC113717566,LOC113717567,LOC113717568,...
-  
+   seqnames                               ranges strand | LOCATION  LOCSTART    LOCEND   QUERYID        TXID
+   Rle>                               <IRanges>  <Rle> | <factor> <integer> <integer> <integer> <character>
+   NC_039898.1:1393106_A/G NC_039898.1   1393106      + |   coding        23        23        23         186
+   NC_039898.1:1393391_T/A NC_039898.1   1393391      + |   coding       160       160        24         186
+   NC_039898.1:1395076_G/A NC_039898.1   1395076      + |   coding      1134      1134        26         186
+   NC_039899.1:893176_A/G NC_039899.1    893176      + |   coding        23        23       288        3946
+   NC_039899.1:893660_T/C NC_039899.1    893660      + |   coding       360       360       289        3946
+   NC_039899.1:894131_G/A NC_039899.1    894131      + |   coding       574       574       293        3946
+   NC_039899.1:894232_C/G NC_039899.1    894232      + |   coding       675       675       294        3946
+   NC_039899.1:894271_G/A NC_039899.1    894271      + |   coding       714       714       295        3946
+   NC_039901.1:14526465_T/A NC_039901.1  14526465      - |   coding      1144      1144       369       20947
+   NC_039901.1:14526465_T/A NC_039901.1  14526465      - |   coding      1144      1144       369       20948
+   
+   CDSID       GENEID       PRECEDEID        FOLLOWID
+   IntegerList>     <character> <CharacterList> <CharacterList>
+   NC_039898.1:1393106_A/G                      308 LOC113688632                                
+   NC_039898.1:1393391_T/A                      309 LOC113688632                                
+   NC_039898.1:1395076_G/A                      312 LOC113688632                                
+   NC_039899.1:893176_A/G                    14627 LOC113697595                                
+   NC_039899.1:893660_T/C                    14628 LOC113697595                                
+   NC_039899.1:894131_G/A                    14629 LOC113697595                                
+   NC_039899.1:894232_C/G                    14629 LOC113697595                                
+   NC_039899.1:894271_G/A                    14629 LOC113697595                                
+   NC_039901.1:14526465_T/A 100255,100256,100257,... LOC113731239                                
+   NC_039901.1:14526465_T/A 100255,100256,100257,... LOC113731239     
+
+   So the head shows there are three variants called on the LOC113688632 gene
+
+
+
 
 ===========================
 Failed Minion Run QC Report
