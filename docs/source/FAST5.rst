@@ -212,7 +212,7 @@ Data Tree
    Mapped Reads:     81
 
 
-.. figure:: ../images/ivg99.png
+.. figure:: ../images/igv99.png
 
 ::
 
