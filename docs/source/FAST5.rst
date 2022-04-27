@@ -28,8 +28,8 @@ FAST5 Files
 Installation
 ------------
 
-   It is necessary to clone a github repository to do the analysis.
-   First clone https://github.com/PBGLMichaelHall/FAST5.git.
+   It is necessary to clone a github repository to do the analysis from my account.
+   First clone it https://github.com/PBGLMichaelHall/FAST5.git.
   
 Data Tree
 ~~~~~~~~~
@@ -45,7 +45,9 @@ Data Tree
 .. code:: r
 
    # Downstream Analysis using Basecalling with Guppy
-
+   # Invoke guppy_basecaller 
+   # Provide all relevant flags and input parameters
+   
    guppy_basecaller --compress_fastq -i fast5/guppy_out/ -f FLO-FLG001 -k SQK-LSK109 --cpu_threads_per_caller 4 --num_callers 1
  
    guppy_basecaller --compress_fastq -i fast5/ -s fast5/guppy_out/ --flowcell FLO-FLG001 --kit SQK-LSK109 --cpu_threads_per_caller 4 --num_callers 1  
@@ -69,13 +71,16 @@ Data Tree
    cd graphmap
    make modules
    make
-   # System file path to graphmap executable program
+   
+   # Specify System file path to graphmap executable program
 
    ~/graphmap/bin/Linux-x64/
      
    # Locate fast5 and reference genome fasta files and invoke graphmap program to align
 
-   ../../../graphmap/bin/Linux-x64/graphmap align -r CoffeeArabica_Cara/ncbi_dataset/data/GCF_003713225.1/Coffee.fna -t 4 -d fast5/guppy_out     /pass/fastq_runid_94dd8d03aa43bb3ac59d61d6b73a0ac5e939526b_0_0.fastq.gz -o map_to_ref/nanopore.graphmap.sam > map_to_ref/nanopore.graphmap.sam.log 2>&1
+   ../../../graphmap/bin/Linux-x64/graphmap align -r CoffeeArabica_Cara/ncbi_dataset/data/GCF_003713225.1/Coffee.fna 
+   -t 4 -d fast5/guppy_out/pass/fastq_runid_94dd8d03aa43bb3ac59d61d6b73a0ac5e939526b_0_0.fastq.gz
+   -o map_to_ref/nanopore.graphmap.sam > map_to_ref/nanopore.graphmap.sam.log 2>&1
 
    -r reference genonme
    -t Threads
@@ -98,7 +103,8 @@ Data Tree
 
    # Invoke samtools view and condition on samtools sort to make a sorted bam file
 
-   samtools view -@ 4 -bS nanopore.graphmap.sam | samtools sort - -@ 4 -o nanopore.graphmap.sorted.bam
+   samtools view -@ 4 -bS nanopore.graphmap.sam | samtools sort - -@ 4 
+   -o nanopore.graphmap.sorted.bam
 
 
    # Create a Qualimap Environment
@@ -127,7 +133,8 @@ Data Tree
 
    # Invoke samtools pileup to align indexed fasta to sorted bam
 
-   samtools mpileup -g -f CoffeeArabica_Cara/ncbi_dataset/data/GCF_003713225.1/Coffee.fna map_to_ref/nanopore.graphmap.sorted.bam | bcftools call -mv -o    vcfplots/all.vcf
+   samtools mpileup -g -f CoffeeArabica_Cara/ncbi_dataset/data/GCF_003713225.1/Coffee.fna map_to_ref/nanopore.graphmap.sorted.bam
+   | bcftools call -mv -o    vcfplots/all.vcf
 
    # Filter for SNPs type and Biallelic sites only
 
@@ -158,7 +165,12 @@ Data Tree
 
 
    setwd("/home/michael/FAST5/CoffeeMinIon/20220414_1039_MN19654_AJF976_ed35bf91/map_to_ref")
-   FeatureCounts<-Rsubread::featureCounts(files = "nanopore.graphmap.sorted.bam", annot.ext =      "../GCF_003713225.1_Cara_1.0_genomic.gff.gz",isGTFAnnotationFile = TRUE,GTF.featureType = "gene", GTF.attrType = "ID")
+   # Sorted BAM file
+   # gene annotation file
+   
+   FeatureCounts<-
+   Rsubread::featureCounts(files = "nanopore.graphmap.sorted.bam", 
+   annot.ext ="../GCF_003713225.1_Cara_1.0_genomic.gff.gz",isGTFAnnotationFile = TRUE,GTF.featureType = "gene", GTF.attrType = "ID")
 
    annotation <- FeatureCounts$annotation
    stat <- FeatureCounts$stat
@@ -172,21 +184,21 @@ Data Tree
    print(ASC)
 
                              GeneID         Chr    Start      End Strand Length nanopore.graphmap.sorted.bam
-   gene-LOC113688632 gene-LOC113688632 NC_039898.1  1392954  1395287      +   2334                           81
-   gene-LOC113697586 gene-LOC113697586 NC_039899.1   884021   886305      +   2285                          118
-   gene-LOC113697595 gene-LOC113697595 NC_039899.1   893020   895356      +   2337                          148
-   gene-LOC113731239 gene-LOC113731239 NC_039901.1 14523710 14529861      -   6152                            1
-   gene-LOC113734903 gene-LOC113734903 NC_039902.1 26262544 26264446      +   1903                            1
-   gene-LOC113697766 gene-LOC113697766 NC_039910.1 22728667 22733865      +   5199                            1
-   gene-LOC113708575 gene-LOC113708575 NC_039914.1  2245618  2250386      -   4769                            1
-   gene-LOC113708187 gene-LOC113708187 NC_039914.1  7384813  7386075      -   1263                            3
-   gene-LOC113707907 gene-LOC113707907 NC_039914.1  7430405  7432582      -   2178                          367
-   gene-LOC113708510 gene-LOC113708510 NC_039914.1  7473077  7475443      -   2367                          122
-   gene-LOC113709599 gene-LOC113709599 NC_039915.1  6555704  6558053      -   2350                            5
-   gene-LOC113710584 gene-LOC113710584 NC_039915.1  6598426  6623704      -  25279                            1
-   gene-LOC113710465 gene-LOC113710465 NC_039915.1  6674915  6677084      -   2170                          114
-   gene-LOC113710464 gene-LOC113710464 NC_039915.1  6714444  6716737      -   2294                           90
-   gene-CoarCp011       gene-CoarCp011 NC_008535.1    16850    21025      -   4176                            1
+   gene-LOC113688632 gene-LOC113688632 NC_039898.1  1392954  1395287      +   2334      81
+   gene-LOC113697586 gene-LOC113697586 NC_039899.1   884021   886305      +   2285      118
+   gene-LOC113697595 gene-LOC113697595 NC_039899.1   893020   895356      +   2337      148
+   gene-LOC113731239 gene-LOC113731239 NC_039901.1 14523710 14529861      -   6152      1
+   gene-LOC113734903 gene-LOC113734903 NC_039902.1 26262544 26264446      +   1903      1
+   gene-LOC113697766 gene-LOC113697766 NC_039910.1 22728667 22733865      +   5199      1
+   gene-LOC113708575 gene-LOC113708575 NC_039914.1  2245618  2250386      -   4769      1
+   gene-LOC113708187 gene-LOC113708187 NC_039914.1  7384813  7386075      -   1263      3
+   gene-LOC113707907 gene-LOC113707907 NC_039914.1  7430405  7432582      -   2178      367
+   gene-LOC113708510 gene-LOC113708510 NC_039914.1  7473077  7475443      -   2367      122
+   gene-LOC113709599 gene-LOC113709599 NC_039915.1  6555704  6558053      -   2350      5
+   gene-LOC113710584 gene-LOC113710584 NC_039915.1  6598426  6623704      -  25279      1
+   gene-LOC113710465 gene-LOC113710465 NC_039915.1  6674915  6677084      -   2170      114
+   gene-LOC113710464 gene-LOC113710464 NC_039915.1  6714444  6716737      -   2294      90
+   gene-CoarCp011       gene-CoarCp011 NC_008535.1    16850    21025      -   4176      1
 
 
 
