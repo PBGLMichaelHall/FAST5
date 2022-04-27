@@ -40,6 +40,170 @@ Data Tree
 
 ::
 
+# I attempt to showcase how to run a FASTQ file through a bioinformatics pipleine
+
+.. code:: r
+
+   # Downstream Analysis using Basecalling with Guppy
+
+   guppy_basecaller --compress_fastq -i fast5/guppy_out/ -f FLO-FLG001 -k SQK-LSK109 --cpu_threads_per_caller 4 --num_callers 1
+ 
+   guppy_basecaller --compress_fastq -i fast5/ -s fast5/guppy_out/ --flowcell FLO-FLG001 --kit SQK-LSK109 --cpu_threads_per_caller 4 --num_callers 1  
+
+
+   --compress_fastq                 Compress fastq output files with gzip.
+   -i                               Path to input fast5 files.
+   -s                               Path to save fastq files.
+   --flowcell                       Flowcell to find a configuration for
+   --kit                            Kit to find a configuration for
+   --cpu_threads_per_caller         Number of CPU worker threads per 
+   --num_callers                    Number of parallel basecallers to create.
+
+
+
+
+
+   # Clone github graphmap repository and make modules
+
+   git clone https://github.com/isovic/graphmap.git
+   cd graphmap
+   make modules
+   make
+   # System file path to graphmap executable program
+
+   ~/graphmap/bin/Linux-x64/
+     
+   # Locate fast5 and reference genome fasta files and invoke graphmap program to align
+
+   ../../../graphmap/bin/Linux-x64/graphmap align -r CoffeeArabica_Cara/ncbi_dataset/data/GCF_003713225.1/Coffee.fna -t 4 -d fast5/guppy_out     /pass/fastq_runid_94dd8d03aa43bb3ac59d61d6b73a0ac5e939526b_0_0.fastq.gz -o map_to_ref/nanopore.graphmap.sam > map_to_ref/nanopore.graphmap.sam.log 2>&1
+
+   -r reference genonme
+   -t Threads
+   -d Directory of FastQ file from FAST5 raw data
+   -o output directory to file ending with .sam
+   > create log of run
+
+
+
+   # Invoke samtools stats on sam file
+
+   samtools stats -d -@ 4 nanopore.graphmap.sam > nanopore.graphmap.sam.stats
+	
+   # Inpect first 40 lines of header
+
+   head -n 40 nanopore.graphmap.sam.stats 
+
+
+
+
+   # Invoke samtools view and condition on samtools sort to make a sorted bam file
+
+   samtools view -@ 4 -bS nanopore.graphmap.sam | samtools sort - -@ 4 -o nanopore.graphmap.sorted.bam
+
+
+   # Create a Qualimap Environment
+
+   conda create --name Qualimap
+
+   conda activate Qualimap
+
+   conda install -c bioconda qualimap
+
+
+
+   # Invoke qualimap on sorted bam file an HTML report should be generated automatically
+
+   qualimap bamqc -bam nanopore.graphmap.sorted.bam -nw 5000 -nt 4 -outdir nanopore.graphmap
+
+
+
+   # Index Reference Genome
+
+   bwa index Coffee.fna
+
+   # make a Directory for vcf file
+
+   mkdir vcfplots
+
+   # Invoke samtools pileup to align indexed fasta to sorted bam
+
+   samtools mpileup -g -f CoffeeArabica_Cara/ncbi_dataset/data/GCF_003713225.1/Coffee.fna map_to_ref/nanopore.graphmap.sorted.bam | bcftools call -mv -o    vcfplots/all.vcf
+
+   # Filter for SNPs type and Biallelic sites only
+
+   bcftools view -m2 -M2 -v snps -o BIALLELIC~ONLY.vcf all.vcf 
+
+   # How many variants were called
+
+   bcftools view BIALLELIC~ONLY.vcf | wc -l
+
+   1468
+
+
+
+
+   # run IGV program on Reference Genome, Sorted Bam, and VCF
+
+
+   ~/IGV_Linux_2.11.9
+   bash igv.sh
+
+   Load Coffee Arabica Genome
+
+
+
+
+
+   # Use Rsubread package to find genes with mapped read
+
+
+   setwd("/home/michael/FAST5/CoffeeMinIon/20220414_1039_MN19654_AJF976_ed35bf91/map_to_ref")
+   FeatureCounts<-Rsubread::featureCounts(files = "nanopore.graphmap.sorted.bam", annot.ext =      "../GCF_003713225.1_Cara_1.0_genomic.gff.gz",isGTFAnnotationFile = TRUE,GTF.featureType = "gene", GTF.attrType = "ID")
+
+   annotation <- FeatureCounts$annotation
+   stat <- FeatureCounts$stat
+   counts <- FeatureCounts$counts
+
+   ASC <- cbind(annotation,counts)
+
+
+   threshold <- 0
+   ASC <- ASC[(apply(counts,1,min)) > threshold,]
+   print(ASC)
+
+                             GeneID         Chr    Start      End Strand Length nanopore.graphmap.sorted.bam
+   gene-LOC113688632 gene-LOC113688632 NC_039898.1  1392954  1395287      +   2334                           81
+   gene-LOC113697586 gene-LOC113697586 NC_039899.1   884021   886305      +   2285                          118
+   gene-LOC113697595 gene-LOC113697595 NC_039899.1   893020   895356      +   2337                          148
+   gene-LOC113731239 gene-LOC113731239 NC_039901.1 14523710 14529861      -   6152                            1
+   gene-LOC113734903 gene-LOC113734903 NC_039902.1 26262544 26264446      +   1903                            1
+   gene-LOC113697766 gene-LOC113697766 NC_039910.1 22728667 22733865      +   5199                            1
+   gene-LOC113708575 gene-LOC113708575 NC_039914.1  2245618  2250386      -   4769                            1
+   gene-LOC113708187 gene-LOC113708187 NC_039914.1  7384813  7386075      -   1263                            3
+   gene-LOC113707907 gene-LOC113707907 NC_039914.1  7430405  7432582      -   2178                          367
+   gene-LOC113708510 gene-LOC113708510 NC_039914.1  7473077  7475443      -   2367                          122
+   gene-LOC113709599 gene-LOC113709599 NC_039915.1  6555704  6558053      -   2350                            5
+   gene-LOC113710584 gene-LOC113710584 NC_039915.1  6598426  6623704      -  25279                            1
+   gene-LOC113710465 gene-LOC113710465 NC_039915.1  6674915  6677084      -   2170                          114
+   gene-LOC113710464 gene-LOC113710464 NC_039915.1  6714444  6716737      -   2294                           90
+   gene-CoarCp011       gene-CoarCp011 NC_008535.1    16850    21025      -   4176                            1
+
+
+
+
+
+   # Look at IGV For the first entry printed ASC object 
+   GeneID:             gene-LOC113688632 
+   Chromosome:         NC_039898.1  
+   Start:              1392954  
+   End:                1395287   
+   Mapped Reads:     81
+
+::
+
+
+
+
 
 ===========================
 Failed Minion Run QC Report
