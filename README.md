@@ -231,7 +231,7 @@ GRanges object with 10 ranges and 9 metadata columns:
 
 #######################################################################################################################################
 
-```
+```r
 
 # So the head shows there are three variants called on the LOC113688632 gene
 
