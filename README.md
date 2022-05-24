@@ -272,6 +272,27 @@ GRanges object with 10 ranges and 9 metadata columns:
 # First we want to reorgainze the data structure so the RScript from https://github.com/roblanf/minion_qc can plot,interpret and analyze the MinION reads. Create a summary directory and place final_summary.txt and sequencing_summary.txt. Copy the MinIONQC.R Script into main directory and run the following command line. It will produce a standard output if successful. 
 
 
+# Make a pdf with this R code using magick library
+
+```r
+
+library(magick)
+img1 <- magick::image_read("gb_per_channel_overview.png")
+img2 <- magick::image_read("channel_summary.png")
+img3 <- magick::image_read("length_vs_q.png")
+img4 <- magick::image_read("q_by_hour.png")
+img5 <- magick::image_read("reads_per_hour.png")
+img6 <- magick::image_read("length_by_hour.png")
+img7 <- magick::image_read("yield_by_length.png")
+img8 <- magick::image_read("flowcell_overview.png")
+img9 <- magick::image_read("yield_over_time.png")
+img10 <- magick::image_read("q_histogram.png")
+img11 <- magick::image_read("length_histogram.png")
+
+magick::image_write(c(img1, img2, img3, img4, img5, img6, img7, img8, img9, img10, img11), format = "pdf", "MinionReport.pdf")
+
+```
+
 ![SO](https://user-images.githubusercontent.com/93121277/164192115-6b8a1a95-7a78-41d3-91b1-a40f8a89bcbd.png)
 
 
